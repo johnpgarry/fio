@@ -182,9 +182,11 @@ static enum fio_q_status fio_pvsyncio2_queue(struct thread_data *td,
 
 	if (io_u->ddir == DDIR_READ)
 		ret = preadv2(f->fd, iov, 1, io_u->offset, flags);
-	else if (io_u->ddir == DDIR_WRITE)
+	else if (io_u->ddir == DDIR_WRITE) {
+		if (td->o.odirect && td->o.oatomic)
+			flags |= RWF_ATOMIC;
 		ret = pwritev2(f->fd, iov, 1, io_u->offset, flags);
-	else if (io_u->ddir == DDIR_TRIM) {
+	} else if (io_u->ddir == DDIR_TRIM) {
 		do_io_u_trim(td, io_u);
 		return FIO_Q_COMPLETED;
 	} else

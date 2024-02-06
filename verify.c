@@ -813,6 +813,12 @@ static int verify_header(struct io_u *io_u, struct thread_data *td,
 {
 	void *p = hdr;
 	uint32_t crc;
+	int aw;
+
+	if (td->o.odirect && td->o.oatomic)
+		aw = 1;
+	else
+		aw = 0;
 
 	if (hdr->magic != FIO_HDR_MAGIC) {
 		log_err("verify: bad magic header %x, wanted %x",
@@ -844,14 +850,16 @@ static int verify_header(struct io_u *io_u, struct thread_data *td,
 	 * numberio check is skipped.
 	 */
 	if (td_write(td) && (td_min_bs(td) == td_max_bs(td)) &&
-	    !td->o.time_based)
-		if (!td->o.verify_only)
-			if (hdr->numberio != io_u->numberio) {
+	    !td->o.time_based) {
+		if (!td->o.verify_only) {
+			if ((hdr->numberio != io_u->numberio) && (aw == 0)) {
 				log_err("verify: bad header numberio %"PRIu16
 					", wanted %"PRIu16,
 					hdr->numberio, io_u->numberio);
 				goto err;
 			}
+		}
+	}
 
 	crc = fio_crc32c(p, offsetof(struct verify_header, crc32));
 	if (crc != hdr->crc32) {

@@ -110,6 +110,8 @@ static int fio_libaio_prep(struct thread_data *td, struct io_u *io_u)
 		io_prep_pwrite(iocb, f->fd, io_u->xfer_buf, io_u->xfer_buflen, io_u->offset);
 		if (o->nowait)
 			iocb->aio_rw_flags |= RWF_NOWAIT;
+		if (td->o.odirect && td->o.oatomic)
+			iocb->aio_rw_flags |= RWF_ATOMIC;
 	} else if (ddir_sync(io_u->ddir))
 		io_prep_fsync(iocb, f->fd);
 

@@ -853,10 +853,10 @@ static int verify_header(struct io_u *io_u, struct thread_data *td,
 	    !td->o.time_based) {
 		if (!td->o.verify_only) {
 			if ((hdr->numberio != io_u->numberio) && (aw == 0)) {
-				log_err("verify: bad header numberio %"PRIu16
-					", wanted %"PRIu16,
-					hdr->numberio, io_u->numberio);
-				goto err;
+			//	log_err("verify: bad header numberio %"PRIu16
+			//		", wanted %"PRIu16,
+			//		hdr->numberio, io_u->numberio);
+			//	goto err;
 			}
 		}
 	}

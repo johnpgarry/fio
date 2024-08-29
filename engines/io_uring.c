@@ -339,6 +339,8 @@ static int fio_ioring_prep(struct thread_data *td, struct io_u *io_u)
 			sqe->rw_flags |= RWF_UNCACHED;
 		if (o->nowait)
 			sqe->rw_flags |= RWF_NOWAIT;
+		if (td->o.odirect && td->o.oatomic)
+			sqe->rw_flags |= RWF_ATOMIC;
 
 		/*
 		 * Since io_uring can have a submission context (sqthread_poll)

@@ -866,7 +866,8 @@ static int verify_header(struct io_u *io_u, struct thread_data *td,
 	if (crc != hdr->crc32) {
 		log_err("verify: bad header crc %x, calculated %x",
 			hdr->crc32, crc);
-		goto err;
+		if (td->o.verify_crc)
+			goto err;
 	}
 	return 0;
 
@@ -1010,6 +1011,9 @@ int verify_io_u(struct thread_data *td, struct io_u **io_u_ptr)
 	}
 
 done:
+	if (!td->o.verify_crc)
+		ret = 0;
+
 	if (ret && td->o.verify_fatal)
 		fio_mark_td_terminate(td);
 

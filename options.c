@@ -3408,6 +3408,17 @@ struct fio_option fio_options[FIO_MAX_OPTS] = {
 		.category = FIO_OPT_C_IO,
 		.group	= FIO_OPT_G_VERIFY,
 	},
+	{
+		.name	= "verify_crc",
+		.lname	= "Verify crc number",
+		.off1	= offsetof(struct thread_options, verify_crc),
+		.type	= FIO_OPT_BOOL,
+		.def	= "1",
+		.help	= "Verify header crc",
+		.parent	= "verify",
+		.category = FIO_OPT_C_IO,
+		.group	= FIO_OPT_G_VERIFY,
+	},
 #ifdef FIO_HAVE_TRIM
 	{
 		.name	= "trim_percentage",

@@ -1206,7 +1206,11 @@ int setup_files(struct thread_data *td)
 			if (!f->io_size) {
 				if (f->file_offset > f->real_file_size)
 					goto err_offset;
+
 				f->io_size = f->real_file_size - f->file_offset;
+				f->io_size = o->offset_increment;
+				printf("%s c td=%p f->io_size=%ld\n", __func__, td, f->io_size);
+
 				if (!f->io_size)
 					log_info("fio: file %s may be ignored\n",
 						f->file_name);
